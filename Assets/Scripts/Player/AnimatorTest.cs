@@ -10,8 +10,11 @@ public class AnimatorTest : MonoBehaviour
     private Animator charAnimator;
     private float moveSpeed = 3.0f;
 
+    public GameObject builderRef;
     public SpriteRenderer charKing;
     public Transform charTransform;
+
+    private List<GameObject> posse = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -81,10 +84,21 @@ public class AnimatorTest : MonoBehaviour
         }
         else
         {
+            for (int i = 0; i < 8 - posse.Count; i++)
+            {
+                growPosse(0);
+            }
             moveSpeed /= 2;
             charAnimator.SetBool("isBuilding", true);
         }
 
+    }
+
+    void growPosse(int type)
+    {
+        var builder = Instantiate(builderRef);
+        posse.Add(builder);
+        builder.transform.parent = transform;
     }
 
 }
