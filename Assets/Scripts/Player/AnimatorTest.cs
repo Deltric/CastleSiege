@@ -60,16 +60,31 @@ public class AnimatorTest : MonoBehaviour
         }
         if (move_vector.magnitude > 0)
         {
-            charAnimator.SetTrigger("StartWalking");
+            charAnimator.SetBool("isWalking", true);
             charTransform.position += move_vector;
         }
-        else { charAnimator.SetTrigger("ReturnToIdle"); }
+        else { charAnimator.SetBool("isWalking", false); }
     }
 
     void kill()
     {
         charAnimator.SetBool("IsDead", true);
         charAnimator.Update(0);
+    }
+
+    void buildToggle()
+    {
+        if(charAnimator.GetBool("isBuilding"))
+        {
+            moveSpeed *= 2;
+            charAnimator.SetBool("isBuilding", false);
+        }
+        else
+        {
+            moveSpeed /= 2;
+            charAnimator.SetBool("isBuilding", true);
+        }
+
     }
 
 }
