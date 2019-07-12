@@ -9,17 +9,18 @@ public class AnimatorTest : MonoBehaviour
     [SerializeField]
     private Animator charAnimator;
     private float moveSpeed = 3.0f;
+    private Vector3[] possePositions = { new Vector3(0, 1, 0), new Vector3(1, 1, 0), new Vector3(1, 0, 0), new Vector3(1, -1, 0), new Vector3(0, -1, 0), new Vector3(-1, -1, 0) , new Vector3(-1, 0, 0), new Vector3(-1, 1, 0) };
 
     public GameObject builderRef;
     public SpriteRenderer charKing;
-    public Transform charTransform;
+    public Transform posseAnchor;
 
     private List<GameObject> posse = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -64,7 +65,7 @@ public class AnimatorTest : MonoBehaviour
         if (move_vector.magnitude > 0)
         {
             charAnimator.SetBool("isWalking", true);
-            charTransform.position += move_vector;
+            transform.position += move_vector;
         }
         else { charAnimator.SetBool("isWalking", false); }
     }
@@ -84,7 +85,8 @@ public class AnimatorTest : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < 8 - posse.Count; i++)
+            int count = posse.Count;
+            for (int i = 0; i < 8 - count; i++)
             {
                 growPosse(0);
             }
@@ -96,9 +98,20 @@ public class AnimatorTest : MonoBehaviour
 
     void growPosse(int type)
     {
-        var builder = Instantiate(builderRef);
+        var builder = Instantiate(builderRef, posseAnchor);
+        var builderanimator = builder.GetComponent("animator");
         posse.Add(builder);
-        builder.transform.parent = transform;
+        orientPosse();
+    }
+
+    void orientPosse()
+    {
+        int pos = 0;
+        foreach(GameObject go in posse)
+        {
+            go.transform.localPosition = possePositions[pos];
+            pos++;
+        }
     }
 
 }
