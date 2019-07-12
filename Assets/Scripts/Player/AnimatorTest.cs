@@ -104,8 +104,7 @@ public class AnimatorTest : MonoBehaviour
             }
             foreach(GameObject go in toRemove)
             {
-                posse.Remove(go);
-                Destroy(go);
+                shrinkPosse(go);
             }
         }
         else
@@ -128,6 +127,16 @@ public class AnimatorTest : MonoBehaviour
         builderanimator.SetFloat("Offset", 0.1f * offset);
         posse.Add(builder);
         orientPosse();
+    }
+
+    void shrinkPosse(GameObject go)
+    {
+        posse.Remove(go);
+        Destroy(go);
+        if(posse.Count == 0)
+        {
+            posseAnchor.rotation = new Quaternion(0,0,0,0);
+        }
     }
 
     void orientPosse()
