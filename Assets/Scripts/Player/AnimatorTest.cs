@@ -9,7 +9,9 @@ public class AnimatorTest : MonoBehaviour
     [SerializeField]
     private Animator charAnimator;
     private float moveSpeed = 3.0f;
-    private Vector3[] possePositions = { new Vector3(0, 1, 0), new Vector3(1, 1, 0), new Vector3(1, 0, 0), new Vector3(1, -1, 0), new Vector3(0, -1, 0), new Vector3(-1, -1, 0) , new Vector3(-1, 0, 0), new Vector3(-1, 1, 0) };
+    private Vector3[] possePositions = { new Vector3(0, 1, 0), new Vector3(0.75f, 0.75f, 0),
+        new Vector3(1, 0, 0), new Vector3(0.75f, -0.75f, 0), new Vector3(0, -1, 0),
+        new Vector3(-0.75f, -0.75f, 0) , new Vector3(-1, 0, 0), new Vector3(-0.75f, 0.75f, 0) };
 
     public GameObject builderRef;
     public SpriteRenderer charKing;
@@ -26,6 +28,15 @@ public class AnimatorTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (posse.Count > 0)
+        {
+            posseAnchor.Rotate(new Vector3(0, 0, 1), -4 * Time.deltaTime);
+            foreach (GameObject go in posse)
+            {
+                go.transform.Rotate(new Vector3(0, 0, 1), 4 * Time.deltaTime);
+            }
+        }
+
         if(Input.GetKeyDown(KeyCode.Space))
         {
             kill();
@@ -82,13 +93,27 @@ public class AnimatorTest : MonoBehaviour
         {
             moveSpeed *= 2;
             charAnimator.SetBool("isBuilding", false);
+            List<GameObject> toRemove = new List<GameObject>();
+            foreach(GameObject go in posse)
+            {
+                if(go.tag == "Builder")
+                {
+                    toRemove.Add(go);
+
+                }
+            }
+            foreach(GameObject go in toRemove)
+            {
+                posse.Remove(go);
+                Destroy(go);
+            }
         }
         else
         {
             int count = posse.Count;
             for (int i = 0; i < 8 - count; i++)
             {
-                growPosse(0);
+                growPosse(0, i);
             }
             moveSpeed /= 2;
             charAnimator.SetBool("isBuilding", true);
@@ -96,10 +121,11 @@ public class AnimatorTest : MonoBehaviour
 
     }
 
-    void growPosse(int type)
+    void growPosse(int type, int offset)
     {
         var builder = Instantiate(builderRef, posseAnchor);
-        var builderanimator = builder.GetComponent("animator");
+        var builderanimator = builder.GetComponent<Animator>();
+        builderanimator.SetFloat("Offset", 0.1f * offset);
         posse.Add(builder);
         orientPosse();
     }
